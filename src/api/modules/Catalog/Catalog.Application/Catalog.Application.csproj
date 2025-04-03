@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>FSH.Starter.WebApi.Catalog.Application</RootNamespace>
+    <AssemblyName>FSH.Starter.WebApi.Catalog.Application</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Utils\fonts\Somar-Regular.otf" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Utils\fonts\Qlines-Bold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utils\fonts\Qlines-Light.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utils\fonts\Qlines-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utils\fonts\Somar-Regular.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utils\Templates\CreditNote.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utils\Templates\DebitNote.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utils\Templates\StandardInvoiceHashingTemplate.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utils\Templates\StandardInvoiceTemplate.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="IKVM.ByteCode" />
+    <PackageReference Include="itext7" />
+    <PackageReference Include="itext7.bouncy-castle-adapter" />
+    <PackageReference Include="QRCoder" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" />
+    <PackageReference Include="System.Security.Cryptography.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="Zatca.EInvoice.SDK">
+      <HintPath>lib\Zatca.EInvoice.SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Zatca.EInvoice.SDK.Contracts">
+      <HintPath>lib\Zatca.EInvoice.SDK.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="Zatca.EInvoice.SDK.Saxon">
+      <HintPath>lib\Zatca.EInvoice.SDK.Saxon.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\framework\Core\Core.csproj" />
+    <ProjectReference Include="..\Catalog.Domain\Catalog.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Features\Zatca\SubmitInvoice\v1\Command\" />
+    <Folder Include="Features\Zatca\ClearInvoice\v1\Command\" />
+    <Folder Include="Features\Zatca\ReportInvoice\v1\Command\" />
+  </ItemGroup>
+</Project>

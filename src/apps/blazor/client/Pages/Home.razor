@@ -1,0 +1,56 @@
+﻿@page "/"
+@using System.Security.Claims
+@using FSH.Starter.Blazor.Client.Components;
+@using FSH.Starter.Shared.Authorization
+@using Mapster
+@using Shared
+@* @using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Index> L *@
+
+@* <MudContainer MaxWidth="MaxWidth.False" Class="dashboard-container">
+    <MudGrid Spacing="3">
+        <!-- First Row (3 Cards) -->
+        <MudItem xs="12" md="4">
+            <DashBoardCard Title="Revenue" Value="$25,300" Icon="attach_money" Color="Color.Success" />
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <DashBoardCard Title="Users" Value="1,254" Icon="@Icons.Material.Rounded.AccessAlarm" Color="Color.Info" />
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <DashBoardCard Title="Orders" Value="350" Icon="@Icons.Material.Rounded.Shop" Color="Color.Warning" />
+        </MudItem>
+
+        <!-- Second Row (2 Cards) -->
+        <MudItem xs="12" md="6">
+            <DashBoardCard Title="New Signups" Value="89" Icon="@Icons.Material.Rounded.Home" Color="Color.Primary" />
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <DashBoardCard Title="Pending Tasks" Value="12" Icon="@Icons.Material.Rounded.Games" Color="Color.Error" />
+        </MudItem>
+
+        <!-- Third Row (2 Cards) -->
+        <MudItem xs="12" md="6">
+            <DashBoardCard Title="Support Tickets" Value="45" Icon="@Icons.Material.Rounded.Nat" Color="Color.Secondary" />
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <DashBoardCard Title="Feedbacks" Value="32" Icon="@Icons.Material.Rounded.CallEnd" Color="Color.Tertiary" />
+        </MudItem>
+    </MudGrid>
+</MudContainer> *@
+
+
+
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = default!;
+    public CreateTenantCommand tenantBasicInfoDto { get; set; } = default!;
+    public IEnumerable<Claim>? Claims { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+        Claims = authState.User.Claims;
+        tenantBasicInfoDto = authState.User.GetCurrentTenantInfo().Adapt<CreateTenantCommand>();
+    }
+}

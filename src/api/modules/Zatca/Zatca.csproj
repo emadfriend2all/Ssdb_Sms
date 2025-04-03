@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>FSH.Starter.WebApi.Zatca</RootNamespace>
+    <AssemblyName>FSH.Starter.WebApi.Zatca</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Infrastructure\Utils\Templates\CreditNote.xml" />
+    <None Remove="Infrastructure\Utils\Templates\DebitNote.xml" />
+    <None Remove="Infrastructure\Utils\Templates\StandardInvoiceHashingTemplate.xsl" />
+    <None Remove="Infrastructure\Utils\Templates\StandardInvoiceTemplate.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Infrastructure\Utils\Templates\CreditNote.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Infrastructure\Utils\Templates\DebitNote.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Infrastructure\Utils\Templates\StandardInvoiceHashingTemplate.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Infrastructure\Utils\Templates\StandardInvoiceTemplate.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\framework\Core\Core.csproj" />
+    <ProjectReference Include="..\..\framework\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="IKVM.ByteCode" />
+    <PackageReference Include="itext7" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" />
+    <PackageReference Include="System.Security.Cryptography.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="Zatca.EInvoice.SDK">
+      <HintPath>lib\Zatca.EInvoice.SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Zatca.EInvoice.SDK.Contracts">
+      <HintPath>lib\Zatca.EInvoice.SDK.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="Zatca.EInvoice.SDK.Saxon">
+      <HintPath>lib\Zatca.EInvoice.SDK.Saxon.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application\Exceptions\" />
+    <Folder Include="Application\Features\ReportInvoice\v1\Command\" />
+    <Folder Include="Application\Features\ClearInvoice\v1\Command\" />
+  </ItemGroup>
+</Project>

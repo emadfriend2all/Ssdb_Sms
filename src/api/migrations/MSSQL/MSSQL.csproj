@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>FSH.Starter.WebApi.Migrations.MSSQL</RootNamespace>
+    <AssemblyName>FSH.Starter.WebApi.Migrations.MSSQL</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\framework\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\..\modules\Todo\Todo.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Identity\" />
+    <Folder Include="Todo\" />
+  </ItemGroup>
+</Project>
