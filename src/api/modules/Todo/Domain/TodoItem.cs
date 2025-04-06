@@ -1,6 +1,6 @@
 ﻿using FSH.Framework.Core.Domain;
 using FSH.Framework.Core.Domain.Contracts;
-using FSH.Starter.WebApi.Todo.Domain.Events;
+
 
 namespace FSH.Starter.WebApi.Todo.Domain;
 public sealed class TodoItem : AuditableEntity, IAggregateRoot
@@ -14,7 +14,6 @@ public sealed class TodoItem : AuditableEntity, IAggregateRoot
     {
         Title = title;
         Note = note;
-        QueueDomainEvent(new TodoItemCreated(Id, Title, Note));
         TodoMetrics.Created.Add(1);
     }
 
@@ -36,10 +35,7 @@ public sealed class TodoItem : AuditableEntity, IAggregateRoot
             isUpdated = true;
         }
 
-        if (isUpdated)
-        {
-            QueueDomainEvent(new TodoItemUpdated(this));
-        }
+       
 
         return this;
     }

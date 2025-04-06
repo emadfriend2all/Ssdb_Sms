@@ -5,19 +5,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace FSH.Starter.WebApi.Todo.Features.Get.v1;
-public static class GetTodoEndpoint
+public static class GetBalanceEndpoint
 {
     internal static RouteHandlerBuilder MapGetTodoEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        return endpoints.MapGet("/{id:guid}", async (Guid id, ISender mediator) =>
+        return endpoints.MapGet("/GetBalance", async (ISender mediator) =>
                         {
-                            var response = await mediator.Send(new GetTodoRequest(id));
+                            var response = await mediator.Send(new GetBalanceRequest());
                             return Results.Ok(response);
                         })
-                        .WithName(nameof(GetTodoEndpoint))
+                        .WithName(nameof(GetBalanceEndpoint))
                         .WithSummary("gets todo item by id")
                         .WithDescription("gets todo item by id")
-                        .Produces<GetTodoResponse>()
+                        .Produces<GetBalanceResponse>()
                         .RequirePermission("Permissions.Todos.View")
                         .MapToApiVersion(1);
     }
