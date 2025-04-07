@@ -1,4 +1,5 @@
 ﻿
+
 namespace FSH.Starter.Shared.Authorization;
 
 public static class FshClaims
@@ -10,4 +11,5 @@ public static class FshClaims
     public const string IpAddress = "ipAddress";
     public const string Expiration = "exp";
     public const string TenantInfo = "tenantInfo";
+    public const string ApiToken = "is_apiToken";
 }

@@ -13,7 +13,7 @@ public static class FshResources
     public const string Invoices = nameof(Invoices);
     public const string Zatca = nameof(Zatca);
     public const string Organizations = nameof(Organizations);
-    public const string Todos = nameof(Todos);
+    public const string SMS = nameof(SMS);
     public const string AuditTrails = nameof(AuditTrails);
     public const string Customers = nameof(Customers);
     public const string Google = nameof(Google);

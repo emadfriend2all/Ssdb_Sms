@@ -12,7 +12,7 @@ public sealed class SendSmsHandler(
 {
     public async Task<SendSmsResponse> Handle(SendSmsCommand request, CancellationToken cancellationToken)
     {
-        var barqRequest = new BarqSendSmsCommand(request.phoneNumber, "Edikhark", "plain", request.message, null, null);
+        var barqRequest = new BarqSendSmsCommand(request.PhoneNumber, "Edikhark", "plain", request.Message, null, null);
         var barqResponse = await ApiHelper.PostAsync<BarqSendSmsCommand, BarqSendSmsResponse>("/sms/send", barqRequest);
 
         #region save
@@ -31,9 +31,9 @@ public record BarqSendSmsCommand(string recipient,string sender_id,string type, 
 
 // Send SMS Response
 public record BarqSendSmsResponse(
-    string Status,
-    string Message,
-    SmsData Data
+    string? Status,
+    string? Message,
+    SmsData? Data
 );
 
 public record SmsData(

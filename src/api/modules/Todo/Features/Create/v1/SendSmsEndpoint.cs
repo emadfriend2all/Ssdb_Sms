@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using FSH.Framework.Infrastructure.Auth.Policy;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -19,7 +20,9 @@ public static class SendSmsEndpoint
                 .WithSummary("Send Sms")
                 .WithDescription("This is the send sms that is used as the main sms in SSDB")
                 .Produces<SendSmsResponse>(StatusCodes.Status201Created)
-                .RequirePermission("Permissions.Todos.Create")
+                .RequireAuthorization() // Ensures authentication is required
+                .WithMetadata(new AuthorizeAttribute("Bearer,ApiToken"))
+                .RequirePermission("Permissions.Todos.Send")
                 .MapToApiVersion(new ApiVersion(1, 0));
 
     }

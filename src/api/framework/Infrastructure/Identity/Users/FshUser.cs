@@ -8,6 +8,7 @@ public class FshUser : IdentityUser
     public Uri? ImageUrl { get; set; }
     public bool IsActive { get; set; }
     public string? RefreshToken { get; set; }
+    public string? ApiToken { get; set; }
     public DateTime RefreshTokenExpiryTime { get; set; }
 
     public string? ObjectId { get; set; }

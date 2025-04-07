@@ -19,7 +19,7 @@ public partial class Todos
         Context = new(
             entityName: "Todos",
             entityNamePlural: "Todos",
-            entityResource: FshResources.Todos,
+            entityResource: FshResources.SMS,
             fields: new()
             {
                 new(prod => prod.Id,"Id", "Id"),

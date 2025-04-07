@@ -15,29 +15,29 @@ using FSH.Framework.Infrastructure.Identity.Audit;
 using FSH.Framework.Infrastructure.Identity.Users;
 using FSH.Framework.Infrastructure.Tenant;
 using FSH.Starter.Shared.Authorization;
-using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Shared;
 
 namespace FSH.Framework.Infrastructure.Identity.Tokens;
 public sealed class TokenService : ITokenService
 {
     private readonly UserManager<FshUser> _userManager;
     private readonly IMultiTenantContextAccessor<FshTenantInfo>? _multiTenantContextAccessor;
+    public IPasswordHasher<string> PasswordHasher { get; set; }
     private readonly JwtOptions _jwtOptions;
     private readonly IPublisher _publisher;
     private readonly ITenantService _tenantService;
-    public TokenService(IOptions<JwtOptions> jwtOptions, UserManager<FshUser> userManager, IMultiTenantContextAccessor<FshTenantInfo>? multiTenantContextAccessor, IPublisher publisher, ITenantService tenantService)
+    public TokenService(IOptions<JwtOptions> jwtOptions, UserManager<FshUser> userManager, IMultiTenantContextAccessor<FshTenantInfo>? multiTenantContextAccessor, IPublisher publisher, ITenantService tenantService, IPasswordHasher<string> passwordHasher)
     {
         _jwtOptions = jwtOptions.Value;
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         _multiTenantContextAccessor = multiTenantContextAccessor;
         _publisher = publisher;
         _tenantService = tenantService;
+        PasswordHasher = passwordHasher;
     }
 
     public async Task<TokenResponse> GenerateTokenAsync(TokenGenerationCommand request, string ipAddress, CancellationToken cancellationToken)
@@ -121,6 +121,31 @@ public sealed class TokenService : ITokenService
 
     private async Task<string> GenerateJwtAsync(FshUser user, string ipAddress) =>
     GenerateEncryptedToken(GetSigningCredentials(), await GetClaimsAsync(user, ipAddress));
+
+    public async Task<StaticTokenGenerationResponse> GenerateStaticTokenAsync(StaticTokenGenerationCommand request, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+        if (user == null) throw new UnauthorizedException("User not found");
+
+        var token = Guid.NewGuid().ToString("N") + RandomString(32); // make it long
+        var tokenHash = PasswordHasher.HashPassword(null, token);
+
+        user.ApiToken = tokenHash;
+
+        await _userManager.UpdateAsync(user);
+
+
+        return new StaticTokenGenerationResponse(token);
+    }
+
+    private static string RandomString(int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var random = new Random();
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[random.Next(s.Length)])?.ToArray());
+    }
+
 
     private SigningCredentials GetSigningCredentials()
     {

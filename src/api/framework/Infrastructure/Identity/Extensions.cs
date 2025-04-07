@@ -47,6 +47,8 @@ internal static class Extensions
            })
            .AddEntityFrameworkStores<IdentityDbContext>()
            .AddDefaultTokenProviders();
+
+        services.AddScoped<IPasswordHasher<string>, PasswordHasher<string>>();
         return services;
     }
 
