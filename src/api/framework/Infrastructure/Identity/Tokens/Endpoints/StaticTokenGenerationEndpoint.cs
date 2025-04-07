@@ -11,19 +11,19 @@ namespace FSH.Framework.Infrastructure.Identity.Tokens.Endpoints;
 
 public static class StaticTokenGenerationEndpoint
 {
-    internal static RouteHandlerBuilder MapStaticTokenGenerationEndpoint(this IEndpointRouteBuilder endpoints)
+    internal static RouteHandlerBuilder MapApiTokenGenerationEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        return endpoints.MapPost("/GenerateStaticToken", (StaticTokenGenerationCommand request,
+        return endpoints.MapPost("/GenerateApiToken", (StaticTokenGenerationCommand request,
             [FromHeader(Name = TenantConstants.Identifier)] string tenant,
             ITokenService service,
             HttpContext context,
             CancellationToken cancellationToken) =>
         {
-            return service.GenerateStaticTokenAsync(request, cancellationToken);
+            return service.GenerateApiTokenAsync(request, cancellationToken);
         })
         .WithName(nameof(StaticTokenGenerationEndpoint))
-        .WithSummary("generate JWTs")
-        .WithDescription("generate JWTs")
+        .WithSummary("generate api token")
+        .WithDescription("generate api token")
         .RequirePermission("Permissions.SMS.Send");
     }
 }

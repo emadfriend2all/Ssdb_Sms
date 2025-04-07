@@ -101,7 +101,7 @@ public sealed class TokenService : ITokenService
 
         user.RefreshToken = GenerateRefreshToken();
         user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpirationInDays);
-
+        user.ApiToken = GenerateRefreshToken();
         await _userManager.UpdateAsync(user);
 
         await _publisher.Publish(new AuditPublishedEvent(new()
@@ -122,30 +122,22 @@ public sealed class TokenService : ITokenService
     private async Task<string> GenerateJwtAsync(FshUser user, string ipAddress) =>
     GenerateEncryptedToken(GetSigningCredentials(), await GetClaimsAsync(user, ipAddress));
 
-    public async Task<StaticTokenGenerationResponse> GenerateStaticTokenAsync(StaticTokenGenerationCommand request, CancellationToken cancellationToken)
+    public async Task<StaticTokenGenerationResponse> GenerateApiTokenAsync(StaticTokenGenerationCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-        if (user == null) throw new UnauthorizedException("User not found");
+        var user = await _userManager.FindByIdAsync(request.UserId.ToString()) ?? 
+            throw new UnauthorizedException("User not found");
 
-        var token = Guid.NewGuid().ToString("N") + RandomString(32); // make it long
-        var tokenHash = PasswordHasher.HashPassword(null, token);
-
-        user.ApiToken = tokenHash;
-
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(FshClaims.Tenant, _multiTenantContextAccessor!.MultiTenantContext.TenantInfo!.Id)
+        };
+        user.ApiToken = GenerateEncryptedToken(GetSigningCredentials(), claims); 
         await _userManager.UpdateAsync(user);
 
-
-        return new StaticTokenGenerationResponse(token);
+        return new StaticTokenGenerationResponse(user.ApiToken);
     }
-
-    private static string RandomString(int length)
-    {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        var random = new Random();
-        return new string(Enumerable.Repeat(chars, length)
-            .Select(s => s[random.Next(s.Length)])?.ToArray());
-    }
-
 
     private SigningCredentials GetSigningCredentials()
     {

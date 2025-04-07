@@ -8,7 +8,7 @@ internal static class Extensions
     {
         app.MapRefreshTokenEndpoint();
         app.MapTokenGenerationEndpoint();
-        app.MapStaticTokenGenerationEndpoint();
+        app.MapApiTokenGenerationEndpoint();
         return app;
     }
 

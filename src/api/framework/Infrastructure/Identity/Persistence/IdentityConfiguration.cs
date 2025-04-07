@@ -32,9 +32,6 @@ public class ApplicationUserConfig : IEntityTypeConfiguration<FshUser>
 
         builder
             .Property(u => u.ObjectId)
-                .HasMaxLength(256); 
-        builder
-            .Property(u => u.ApiToken)
                 .HasMaxLength(256);
     }
 }
