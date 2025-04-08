@@ -48,4 +48,7 @@ public static class ClaimsPrincipalExtensions
             ? null
             : JsonConvert.DeserializeObject<TenantBasicInfoDto>(json);
     }
+
+    public static string? GetApiToken(this ClaimsPrincipal principal)
+        => principal.FindFirstValue(FshClaims.ApiToken);
 }

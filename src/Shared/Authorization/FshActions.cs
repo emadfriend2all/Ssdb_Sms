@@ -9,5 +9,6 @@ public static class FshActions
     public const string Export = nameof(Export);
     public const string Generate = nameof(Generate);
     public const string Clean = nameof(Clean);
+    public const string Send = nameof(Send);
     public const string UpgradeSubscription = nameof(UpgradeSubscription);
 }

@@ -16,4 +16,5 @@ public interface ICurrentUser
     bool IsInRole(string role);
 
     IEnumerable<Claim>? GetUserClaims();
+    string? GetUserApiToken();
 }

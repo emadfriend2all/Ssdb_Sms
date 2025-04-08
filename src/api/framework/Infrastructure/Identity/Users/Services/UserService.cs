@@ -99,6 +99,18 @@ internal sealed partial class UserService(
         return user.Adapt<UserDetail>();
     }
 
+    public async Task<UserDetail> GetUserByApiToken(string token, CancellationToken cancellationToken)
+    {
+        var user = await userManager.Users
+            .AsNoTracking()
+            .Where(u => u.ApiToken == token)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        _ = user ?? throw new NotFoundException("user not found");
+
+        return user.Adapt<UserDetail>();
+    }
+
     public Task<int> GetCountAsync(CancellationToken cancellationToken) =>
         userManager.Users.AsNoTracking().CountAsync(cancellationToken);
 

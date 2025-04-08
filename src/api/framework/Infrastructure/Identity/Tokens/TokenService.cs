@@ -15,29 +15,29 @@ using FSH.Framework.Infrastructure.Identity.Audit;
 using FSH.Framework.Infrastructure.Identity.Users;
 using FSH.Framework.Infrastructure.Tenant;
 using FSH.Starter.Shared.Authorization;
-using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Shared;
 
 namespace FSH.Framework.Infrastructure.Identity.Tokens;
 public sealed class TokenService : ITokenService
 {
     private readonly UserManager<FshUser> _userManager;
     private readonly IMultiTenantContextAccessor<FshTenantInfo>? _multiTenantContextAccessor;
+    public IPasswordHasher<string> PasswordHasher { get; set; }
     private readonly JwtOptions _jwtOptions;
     private readonly IPublisher _publisher;
     private readonly ITenantService _tenantService;
-    public TokenService(IOptions<JwtOptions> jwtOptions, UserManager<FshUser> userManager, IMultiTenantContextAccessor<FshTenantInfo>? multiTenantContextAccessor, IPublisher publisher, ITenantService tenantService)
+    public TokenService(IOptions<JwtOptions> jwtOptions, UserManager<FshUser> userManager, IMultiTenantContextAccessor<FshTenantInfo>? multiTenantContextAccessor, IPublisher publisher, ITenantService tenantService, IPasswordHasher<string> passwordHasher)
     {
         _jwtOptions = jwtOptions.Value;
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         _multiTenantContextAccessor = multiTenantContextAccessor;
         _publisher = publisher;
         _tenantService = tenantService;
+        PasswordHasher = passwordHasher;
     }
 
     public async Task<TokenResponse> GenerateTokenAsync(TokenGenerationCommand request, string ipAddress, CancellationToken cancellationToken)
@@ -101,7 +101,7 @@ public sealed class TokenService : ITokenService
 
         user.RefreshToken = GenerateRefreshToken();
         user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpirationInDays);
-
+        user.ApiToken = GenerateRefreshToken();
         await _userManager.UpdateAsync(user);
 
         await _publisher.Publish(new AuditPublishedEvent(new()
@@ -121,6 +121,23 @@ public sealed class TokenService : ITokenService
 
     private async Task<string> GenerateJwtAsync(FshUser user, string ipAddress) =>
     GenerateEncryptedToken(GetSigningCredentials(), await GetClaimsAsync(user, ipAddress));
+
+    public async Task<StaticTokenGenerationResponse> GenerateApiTokenAsync(StaticTokenGenerationCommand request, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByIdAsync(request.UserId.ToString()) ?? 
+            throw new UnauthorizedException("User not found");
+
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(FshClaims.Tenant, _multiTenantContextAccessor!.MultiTenantContext.TenantInfo!.Id)
+        };
+        user.ApiToken = GenerateEncryptedToken(GetSigningCredentials(), claims); 
+        await _userManager.UpdateAsync(user);
+
+        return new StaticTokenGenerationResponse(user.ApiToken);
+    }
 
     private SigningCredentials GetSigningCredentials()
     {

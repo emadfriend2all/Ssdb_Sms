@@ -36,4 +36,5 @@ public interface IUserService
     Task ChangePasswordAsync(ChangePasswordCommand request, string userId);
     Task<string> AssignRolesAsync(string userId, AssignUserRoleCommand request, CancellationToken cancellationToken);
     Task<List<UserRoleDetail>> GetUserRolesAsync(string userId, CancellationToken cancellationToken);
+    Task<UserDetail> GetUserByApiToken(string token, CancellationToken cancellationToken);
 }

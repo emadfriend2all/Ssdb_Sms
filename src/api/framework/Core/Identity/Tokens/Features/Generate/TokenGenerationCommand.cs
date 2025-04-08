@@ -16,3 +16,7 @@ public class GenerateTokenValidator : AbstractValidator<TokenGenerationCommand>
         RuleFor(p => p.Password).Cascade(CascadeMode.Stop).NotEmpty();
     }
 }
+
+
+public record StaticTokenGenerationCommand(string UserId);
+public record StaticTokenGenerationResponse(string Token);

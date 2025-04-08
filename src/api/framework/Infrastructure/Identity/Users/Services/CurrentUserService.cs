@@ -24,6 +24,11 @@ public class CurrentUser : ICurrentUser, ICurrentUserInitializer
             ? _user!.GetEmail()
             : string.Empty;
 
+    public string? GetUserApiToken() =>
+        IsAuthenticated()
+            ? _user!.GetApiToken()
+            : string.Empty;
+
     public bool IsAuthenticated() =>
         _user?.Identity?.IsAuthenticated is true;
 
